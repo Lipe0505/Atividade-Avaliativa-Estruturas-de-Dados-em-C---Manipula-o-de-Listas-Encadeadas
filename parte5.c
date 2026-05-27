@@ -21,9 +21,6 @@ typedef struct No {
     struct No *ant;
 } No;
 
-/* ─── Funções auxiliares ───────────────────────────────── */
-
-/* Cria um novo nó isolado e auto-circular */
 static No *criarNo(const char *nome) {
     No *novo = (No *)malloc(sizeof(No));
     if (novo == NULL) {
@@ -37,33 +34,22 @@ static No *criarNo(const char *nome) {
     return novo;
 }
 
-/* ─── Funções obrigatórias ─────────────────────────────── */
-
-/*
- * Adiciona uma música ao final da playlist.
- * Mantém a circularidade: último->prox = head e head->ant = último.
- */
 void adicionarMusica(No **head, char *nome) {
     No *novo = criarNo(nome);
 
     if (*head == NULL) {
-        *head = novo; /* lista vazia: nó aponta para si mesmo */
+        *head = novo; 
         return;
     }
 
-    No *ultimo = (*head)->ant; /* head->ant sempre é o último nó */
+    No *ultimo = (*head)->ant; 
 
-    /* Encadeia novo nó entre 'ultimo' e 'head' */
     ultimo->prox = novo;
     novo->ant    = ultimo;
     novo->prox   = *head;
     (*head)->ant = novo;
 }
 
-/*
- * Avança para a próxima música.
- * Como a lista é circular, nunca há NULL.
- */
 void proximaMusica(No **atual) {
     if (*atual == NULL) {
         printf("Playlist vazia.\n");
@@ -72,9 +58,6 @@ void proximaMusica(No **atual) {
     *atual = (*atual)->prox;
 }
 
-/*
- * Retrocede para a música anterior.
- */
 void musicaAnterior(No **atual) {
     if (*atual == NULL) {
         printf("Playlist vazia.\n");
@@ -83,11 +66,6 @@ void musicaAnterior(No **atual) {
     *atual = (*atual)->ant;
 }
 
-/*
- * Exibe todas as músicas da playlist.
- * Usa o head como âncora para detectar o fim do percurso
- * e evitar loop infinito.
- */
 void exibirPlaylist(No *head) {
     if (head == NULL) {
         printf("Playlist vazia.\n");
@@ -104,24 +82,20 @@ void exibirPlaylist(No *head) {
         atual = atual->prox;
     } while (atual != head);
 
-    /* Indica circularidade */
     printf(" <->\n");
     printf("          ^");
-    /* Alinha a seta de volta ao início */
+
     No *tmp = head;
     int total = 0;
     do {
-        total += (int)strlen(tmp->musica) + 5; /* [nome] + " <-> " */
+        total += (int)strlen(tmp->musica) + 5; 
         tmp = tmp->prox;
     } while (tmp != head);
-    total -= 5; /* último não tem " <-> " extra antes do fechamento */
+    total -= 5; 
     for (int i = 0; i < total - 1; i++) printf("_");
     printf("|\n");
 }
 
-/*
- * Retorna a quantidade de músicas na playlist.
- */
 int totalMusicas(No *head) {
     if (head == NULL) {
         return 0;
@@ -137,10 +111,6 @@ int totalMusicas(No *head) {
     return count;
 }
 
-/*
- * Remove uma música pelo nome.
- * Retorna 1 se removeu, 0 se não encontrou.
- */
 int removerMusica(No **head, const char *nome) {
     if (*head == NULL) {
         return 0;
@@ -152,17 +122,14 @@ int removerMusica(No **head, const char *nome) {
     for (int i = 0; i < total; i++) {
         if (strcmp(atual->musica, nome) == 0) {
             if (total == 1) {
-                /* Único nó na lista */
                 free(atual);
                 *head = NULL;
                 return 1;
             }
 
-            /* Ajusta ponteiros dos vizinhos */
             atual->ant->prox = atual->prox;
             atual->prox->ant = atual->ant;
 
-            /* Se estamos removendo o head, avança o head */
             if (atual == *head) {
                 *head = atual->prox;
             }
@@ -176,9 +143,6 @@ int removerMusica(No **head, const char *nome) {
     return 0;
 }
 
-/*
- * Libera toda a memória da playlist.
- */
 void liberarPlaylist(No **head) {
     if (*head == NULL) {
         return;
@@ -196,12 +160,6 @@ void liberarPlaylist(No **head) {
     *head = NULL;
 }
 
-/* ─── Demonstração de navegação completa ──────────────── */
-
-/*
- * Simula a reprodução de toda a playlist uma vez,
- * detectando quando voltou ao início para evitar loop infinito.
- */
 void reproduzirPlaylist(No *head) {
     if (head == NULL) {
         printf("Playlist vazia, nada a reproduzir.\n");
@@ -219,15 +177,12 @@ void reproduzirPlaylist(No *head) {
     printf("↺ Voltando ao inicio: %s\n", atual->musica);
 }
 
-/* ─── Testes ─────────────────────────────────────────── */
-
 int main(void) {
     printf("=== PARTE 5: Playlist Circular Duplamente Encadeada ===\n\n");
 
     No *playlist = NULL;
     No *atual    = NULL;
 
-    /* Adiciona músicas */
     adicionarMusica(&playlist, "Rock");
     adicionarMusica(&playlist, "Jazz");
     adicionarMusica(&playlist, "Pop");
@@ -235,7 +190,6 @@ int main(void) {
     exibirPlaylist(playlist);
     printf("Total de musicas: %d\n\n", totalMusicas(playlist));
 
-    /* Navegação para frente */
     printf("--- Navegacao para frente ---\n");
     atual = playlist;
     printf("Atual: %s\n", atual->musica);
@@ -246,7 +200,6 @@ int main(void) {
     proximaMusica(&atual);
     printf("Proxima (circular): %s\n\n", atual->musica);
 
-    /* Navegação para trás */
     printf("--- Navegacao para tras ---\n");
     atual = playlist;
     printf("Atual: %s\n", atual->musica);
@@ -255,36 +208,30 @@ int main(void) {
     musicaAnterior(&atual);
     printf("Anterior: %s\n\n", atual->musica);
 
-    /* Reprodução completa com controle de percurso */
     printf("--- Reproducao completa ---\n");
     reproduzirPlaylist(playlist);
 
-    /* Adiciona mais músicas */
     printf("\n--- Adicionando mais musicas ---\n");
     adicionarMusica(&playlist, "Blues");
     adicionarMusica(&playlist, "Classical");
     exibirPlaylist(playlist);
     printf("Total: %d\n\n", totalMusicas(playlist));
 
-    /* Remove uma música */
     printf("--- Removendo 'Jazz' ---\n");
     int removido = removerMusica(&playlist, "Jazz");
     printf("Resultado: %s\n", removido ? "removido com sucesso" : "nao encontrado");
     exibirPlaylist(playlist);
     printf("Total: %d\n\n", totalMusicas(playlist));
-
-    /* Remove música inexistente */
+    
     printf("--- Removendo 'Samba' (inexistente) ---\n");
     removido = removerMusica(&playlist, "Samba");
     printf("Resultado: %s\n\n", removido ? "removido com sucesso" : "nao encontrado");
 
-    /* Remove o head */
     printf("--- Removendo 'Rock' (head) ---\n");
     removerMusica(&playlist, "Rock");
     exibirPlaylist(playlist);
     printf("Total: %d\n\n", totalMusicas(playlist));
 
-    /* Reprodução final */
     printf("--- Reproducao final ---\n");
     reproduzirPlaylist(playlist);
 
