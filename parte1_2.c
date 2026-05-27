@@ -6,6 +6,7 @@ typedef struct No {
     struct No *prox;
 } No;
 
+
 No *criarNo(int valor) {
     No *novo = (No *)malloc(sizeof(No));
     if (novo == NULL) {
@@ -36,6 +37,12 @@ void liberarLista(No **head) {
     *head = NULL;
 }
 
+/*
+ * Parte 1 — Inserção em Posição Específica
+ * Insere um novo nó com 'valor' na posição indicada (base 0).
+ * Funciona para: lista vazia, início (pos=0), meio e fim.
+ * Exibe erro se a posição for inválida.
+ */
 void inserirPosicao(No **head, int valor, int posicao) {
     if (posicao < 0) {
         printf("Erro: posicao invalida (%d).\n", posicao);
@@ -68,6 +75,11 @@ void inserirPosicao(No **head, int valor, int posicao) {
     atual->prox = novo;
 }
 
+/*
+ * Parte 2 — Busca por Valor
+ * Retorna a posição (base 0) da primeira ocorrência de 'valor'.
+ * Retorna -1 se não encontrado.
+ */
 int buscarValor(No *head, int valor) {
     No *atual = head;
     int posicao = 0;
@@ -83,6 +95,7 @@ int buscarValor(No *head, int valor) {
     return -1;
 }
 
+/* ─── Testes ─────────────────────────────────────────── */
 
 int main(void) {
     No *lista = NULL;
