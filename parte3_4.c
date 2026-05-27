@@ -1,8 +1,3 @@
-/*
- * Parte 3: Inverter Lista
- * Parte 4: Dividir Lista em Duas
- */
-
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -11,7 +6,6 @@ typedef struct No {
     struct No *prox;
 } No;
 
-/* Cria um novo nó */
 No *criarNo(int valor) {
     No *novo = (No *)malloc(sizeof(No));
     if (novo == NULL) {
@@ -23,7 +17,6 @@ No *criarNo(int valor) {
     return novo;
 }
 
-/* Insere no final da lista */
 void inserirFim(No **head, int valor) {
     No *novo = criarNo(valor);
     if (*head == NULL) {
@@ -37,7 +30,6 @@ void inserirFim(No **head, int valor) {
     atual->prox = novo;
 }
 
-/* Exibe todos os elementos da lista */
 void exibirLista(No *head) {
     No *atual = head;
     while (atual != NULL) {
@@ -47,7 +39,6 @@ void exibirLista(No *head) {
     printf("NULL\n");
 }
 
-/* Libera toda a memória da lista */
 void liberarLista(No **head) {
     No *atual = *head;
     while (atual != NULL) {
@@ -58,27 +49,19 @@ void liberarLista(No **head) {
     *head = NULL;
 }
 
-/*
- * Parte 3 — Inverter Lista
- * Inverte a lista in-place usando apenas três ponteiros auxiliares.
- * Não usa vetor nem cria nova lista.
- *
- * Algoritmo: a cada iteração, o ponteiro 'prox' do nó atual
- * é redirecionado para o nó anterior, avançando pelos três ponteiros.
- */
 void inverterLista(No **head) {
     No *anterior = NULL;
     No *atual = *head;
     No *proximo = NULL;
 
     while (atual != NULL) {
-        proximo = atual->prox;   /* guarda o próximo antes de sobrescrever */
-        atual->prox = anterior;  /* inverte o ponteiro                     */
-        anterior = atual;        /* avança 'anterior'                      */
-        atual = proximo;         /* avança 'atual'                         */
+        proximo = atual->prox;  
+        atual->prox = anterior;
+        anterior = atual;        
+        atual = proximo;        
     }
 
-    *head = anterior; /* novo head é o último nó visitado */
+    *head = anterior;
 }
 
 /*
@@ -98,27 +81,18 @@ void dividirLista(No *head, No **lista1, No **lista2) {
 
     No *lento = head;
     No *rapido = head;
-
-    /*
-     * Avança 'rapido' dois passos e 'lento' um passo.
-     * Condição: rapido->prox e rapido->prox->prox devem existir.
-     * Isso faz 'lento' parar no nó do meio (favorecendo a primeira metade
-     * quando o total é ímpar).
-     */
+    
     while (rapido->prox != NULL && rapido->prox->prox != NULL) {
         lento = lento->prox;
         rapido = rapido->prox->prox;
     }
 
-    *lista1 = head;          /* primeira metade começa no início   */
-    *lista2 = lento->prox;   /* segunda metade começa após o meio  */
-    lento->prox = NULL;      /* corta a ligação entre as metades   */
+    *lista1 = head;          
+    *lista2 = lento->prox;   
+    lento->prox = NULL;      
 }
 
-/* ─── Testes ─────────────────────────────────────────── */
-
 int main(void) {
-    /* ── Parte 3 ── */
     printf("=== PARTE 3: Inverter Lista ===\n\n");
 
     No *lista = NULL;
@@ -134,7 +108,6 @@ int main(void) {
     printf("Apos:  ");
     exibirLista(lista);
 
-    /* Lista com um elemento */
     No *unitaria = criarNo(42);
     printf("\nLista unitaria antes: ");
     exibirLista(unitaria);
@@ -145,10 +118,8 @@ int main(void) {
 
     liberarLista(&lista);
 
-    /* ── Parte 4 ── */
     printf("\n=== PARTE 4: Dividir Lista em Duas ===\n\n");
 
-    /* Caso par: 5 elementos → 3 + 2 */
     No *base = NULL;
     inserirFim(&base, 10);
     inserirFim(&base, 20);
@@ -170,7 +141,6 @@ int main(void) {
     liberarLista(&l1);
     liberarLista(&l2);
 
-    /* Caso par: 4 elementos → 2 + 2 */
     No *par = NULL;
     inserirFim(&par, 1);
     inserirFim(&par, 2);
@@ -191,7 +161,6 @@ int main(void) {
     liberarLista(&p1);
     liberarLista(&p2);
 
-    /* Caso: 1 elemento */
     No *solo = criarNo(99);
     printf("\nOriginal (1 elemento):  ");
     exibirLista(solo);
